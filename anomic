@@ -1,0 +1,108 @@
+local library = loadstring(game:HttpGet(('https://pastebin.com/raw/FsJak6AT')))()
+
+
+
+
+local w = library:CreateWindow("Anomic")
+
+
+
+
+local anc = w:CreateFolder("Teleports")
+
+
+
+anc:Button("Arway",function()
+
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1734.09875, -65.5734253, -1359.77319)
+
+end)
+
+
+
+anc:Button("Airfield",function()
+    
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1895.09937, -21.7114868, -104.301506)
+
+end)
+
+
+
+anc:Button("Pahrump",function()
+    
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-51.6184235, 9.67657471, 17.5573959)
+
+end)
+
+
+
+anc:Button("Printer Spot",function()
+    
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(817.039001, -31.3234253, -1150.89172)
+
+end)
+
+
+
+local anc = w:CreateFolder("Utility")
+
+
+
+anc:Button("Q To Teleport",function()
+    
+    loadstring(game:HttpGet(('https://pastebin.com/raw/tUkrykxj'),true))()
+
+end)
+
+
+
+anc:Button("iBtools",function()
+    
+    loadstring(game:GetObjects('rbxassetid://552440069')[1].Source)()
+
+end)
+
+
+
+anc:Button("Position Save",function()
+    
+    loadstring(game:HttpGet(('https://pastebin.com/raw/DgErgaMh')))()
+
+
+end)
+
+
+
+anc:Button("Infinite Yield",function()
+    
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+
+end)
+
+
+
+anc:Button("ESP",function()
+    
+    loadstring(game:HttpGet("https://ic3w0lf.xyz/rblx/protoesp",true))()
+
+end)
+
+
+
+anc:Button("Save Tools",function()
+    
+    loadstring(game:HttpGet(('https://pastebin.com/raw/FtG9GeM8'),true))()
+
+end)
+
+
+
+local anc = w:CreateFolder("Settings")
+
+
+
+anc:DestroyGUI()
+
+
+
+anc:GuiSettings()
