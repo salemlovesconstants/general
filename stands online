@@ -1,0 +1,37 @@
+local library = loadstring(game:HttpGet(('https://pastebin.com/raw/FsJak6AT')))()
+
+local w = library:CreateWindow("Stands Online")
+
+local b = w:CreateFolder("Items")
+
+b:Button("Item ESP",function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/QdtmUSyq"))() 
+end)
+
+b:Button("Item Farmer",function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/Sc8ZWE27"))() 
+end)
+
+local b = w:CreateFolder("GUIs")
+
+b:Button("Items",function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/ePdxQSYd",true))()
+end)
+
+b:Button("Autofarm",function()
+    loadstring(game:HttpGet(('https://maxv.ml/uploads/so.lua')))() 
+end)
+
+local b = w:CreateFolder("Utility")
+
+b:Button("CTRL Teleport",function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/91fV9mGe"))() 
+end)
+
+b:Button("ESP",function()
+    loadstring(game:HttpGet("https://ic3w0lf.xyz/rblx/protoesp",true))()
+end)
+
+b:Button("Save Tool",function()
+    loadstring(game:HttpGet(('https://pastebin.com/raw/FtG9GeM8'),true))()
+end)
