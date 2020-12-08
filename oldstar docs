@@ -1,0 +1,1729 @@
+local exploit = (pebc_execute and 'ProtoSmasher' or 'synapse'); 
+
+local UIS = game:GetService("UserInputService") 
+
+local TweenService = game:GetService("TweenService") 
+
+local ScreenGui = Instance.new("ScreenGui") 
+
+  
+
+if exploit == 'synapse' then 
+
+    syn.protect_gui(ScreenGui) 
+
+elseif exploit == 'ProtoSmasher' and pebc_execute then 
+
+    get_hidden_gui(ScreenGui) 
+
+end 
+
+  
+
+ScreenGui.Parent = game:GetService("CoreGui") 
+
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling 
+
+ScreenGui.Name = "EdgeMain" 
+
+  
+
+UIS.InputBegan:Connect(function(Input, gameProcessedEvent, onGui) 
+
+    if onGui then return; end; 
+
+    if gameProcessedEvent then return end 
+
+  
+
+    if Input.KeyCode == Enum.KeyCode.RightShift then 
+
+        ScreenGui.Enabled = not ScreenGui.Enabled 
+
+    end 
+
+end) 
+
+  
+
+local Library = {} 
+
+  
+
+Library.Colors = {} 
+
+Library.Colors.Underline = Color3.new(1, 1, 1) 
+
+Library.Colors.Header = Color3.new(0.117647, 0.117647, 0.117647) 
+
+Library.Colors.Body = Color3.new(0.0980392, 0.0980392, 0.0980392) 
+
+Library.Colors.Text = Color3.new(1, 1, 1) 
+
+Library.Colors.TextLabel = Color3.new(0.117647, 0.117647, 0.117647) 
+
+Library.Colors.Button = Color3.new(0.117647, 0.117647, 0.117647) 
+
+Library.Colors.Dropdown = Color3.new(0.117647, 0.117647, 0.117647) 
+
+Library.Colors.PlaceholderText = Color3.new(0.635294, 0.635294, 0.635294) 
+
+Library.Colors.HideButton = Color3.new(0.941177, 0.941177, 0.941177) 
+
+Library.Colors.Border = Color3.new(0.196078, 0.196078, 0.196078) 
+
+Library.Colors.Checkbox = {} 
+
+Library.Colors.Checkbox.Checked = Color3.new(1, 1, 1) 
+
+Library.Colors.Checkbox.Unchecked = Color3.new(0.117647, 0.117647, 0.117647) 
+
+  
+
+local function GetNextWindowPosition() 
+
+    local BiggestSize = 0; 
+
+        local SOffset = nil; 
+
+        for i,v in pairs(ScreenGui:GetChildren()) do 
+
+            if v.Position.X.Offset>BiggestSize then 
+
+                BiggestSize = v.Position.X.Offset 
+
+                SOffset = v; 
+
+            end 
+
+        end 
+
+        if BiggestSize == 0 then 
+
+            BiggestSize = BiggestSize + 5; 
+
+        else 
+
+            BiggestSize = BiggestSize + SOffset.Size.X.Offset + 5; 
+
+        end 
+
+         
+
+        return BiggestSize; 
+
+end 
+
+  
+
+local function RotateBounce(part, new, _delay) 
+
+    _delay = _delay or 0.5 
+
+    local tweenInfo = TweenInfo.new(_delay, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out) 
+
+    local tween = TweenService:Create(part, tweenInfo, new) 
+
+    tween:Play() 
+
+end 
+
+  
+
+local function RotateQuad(part, new, _delay) 
+
+    _delay = _delay or 0.5 
+
+    local tweenInfo = TweenInfo.new(_delay, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) 
+
+    local tween = TweenService:Create(part, tweenInfo, new) 
+
+    tween:Play() 
+
+end 
+
+  
+
+function Library:CreateTab(title)     
+
+    local UserInputService = game:GetService("UserInputService") 
+
+    local Dragging 
+
+    local DragInput 
+
+    local DragStart 
+
+    local StartPosition     
+
+    local Top = Instance.new("Frame") 
+
+    local Style = Instance.new("Frame") 
+
+    local Body = Instance.new("Frame") 
+
+    local Title = Instance.new("TextLabel") 
+
+    local Hide = Instance.new("TextButton") 
+
+    local UIListLayout = Instance.new("UIListLayout") 
+
+  
+
+    Top.Name = title 
+
+     
+
+    Top.BackgroundColor3 = Library.Colors.Header 
+
+    Top.BorderSizePixel = 0 
+
+    Top.Position = UDim2.new(0, GetNextWindowPosition()+ 20, 0, 45) 
+
+    Top.Size = UDim2.new(0, 238, 0, 31) 
+
+    Top.Active = true 
+
+    Top.Draggable = true; 
+
+    Top.Parent = ScreenGui 
+
+     
+
+    local function update(input) 
+
+        local delta = input.Position - DragStart 
+
+        Top.Position = UDim2.new(StartPosition.X.Scale, StartPosition.X.Offset + delta.X, StartPosition.Y.Scale, StartPosition.Y.Offset + delta.Y) 
+
+    end 
+
+    Top.InputBegan:Connect(function(input) 
+
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then 
+
+            Dragging = true 
+
+            DragStart = input.Position 
+
+            StartPosition = Top.Position 
+
+             
+
+            input.Changed:Connect(function() 
+
+                if input.UserInputState == Enum.UserInputState.End then 
+
+                    Dragging = false 
+
+                end 
+
+            end) 
+
+        end 
+
+    end) 
+
+    Top.InputChanged:Connect(function(input) 
+
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then 
+
+            DragInput = input 
+
+        end 
+
+    end) 
+
+    UserInputService.InputChanged:Connect(function(input) 
+
+        if input == DragInput and Dragging then 
+
+            update(input) 
+
+        end 
+
+    end) 
+
+  
+
+    Style.Name = "Style" 
+
+    Style.Parent = Top 
+
+    Style.BackgroundColor3 = Library.Colors.Underline 
+
+    Style.BorderSizePixel = 0 
+
+    Style.Position = UDim2.new(0, 0, 0.935483873, 0) 
+
+    Style.Size = UDim2.new(1, 0, 0, 2) 
+
+  
+
+    Body.Name = "Body" 
+
+    Body.Parent = Style 
+
+    Body.BackgroundColor3 = Library.Colors.Body 
+
+    Body.BorderSizePixel = 0 
+
+    Body.Position = UDim2.new(0, 0, 1, 0) 
+
+    Body.Size = UDim2.new(1, 0, 0, 85) 
+
+    Body.ClipsDescendants = true 
+
+  
+
+    Title.Name = "Title" 
+
+    Title.Parent = Top 
+
+    Title.BackgroundColor3 = Color3.new(0.156863, 0.156863, 0.156863) 
+
+    Title.BackgroundTransparency = 1 
+
+    Title.Position = UDim2.new(0.0336134471, 0, 0, 0) 
+
+    Title.Size = UDim2.new(0, 205, 0, 29) 
+
+    Title.Font = Enum.Font.Code 
+
+    Title.Text = title 
+
+    Title.TextColor3 = Library.Colors.Text 
+
+    Title.TextSize = 16 
+
+    Title.TextXAlignment = Enum.TextXAlignment.Left 
+
+  
+
+    Hide.Name = "Hide" 
+
+    Hide.Parent = Top 
+
+    Hide.BackgroundColor3 = Color3.new(0.156863, 0.156863, 0.156863) 
+
+    Hide.BackgroundTransparency = 1 
+
+    Hide.Position = UDim2.new(0.89495796, 0, 0, 0) 
+
+    Hide.Size = UDim2.new(0, 25, 0.935483873, 0) 
+
+    Hide.AutoButtonColor = false 
+
+    Hide.Font = Enum.Font.Code 
+
+    Hide.Text = "-" 
+
+    Hide.TextColor3 = Library.Colors.HideButton 
+
+    Hide.TextSize = 16 
+
+  
+
+    Top.InputBegan:Connect(function(input) 
+
+        if input.UserInputType == Enum.UserInputType.MouseMovement then 
+
+            game:GetService("TweenService"):Create(Top, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play(); 
+
+        end 
+
+    end) 
+
+  
+
+    Top.InputEnded:Connect(function(input) 
+
+        if input.UserInputType == Enum.UserInputType.MouseMovement then 
+
+            game:GetService("TweenService"):Create(Top, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(29, 29, 29)}):Play(); 
+
+        end 
+
+    end) 
+
+  
+
+    local hidden = true; 
+
+     
+
+    Hide.MouseButton1Click:connect(function() 
+
+        hidden = not hidden; 
+
+        Body.Visible = hidden; 
+
+        if hidden == true then 
+
+            Hide.Text = "-" 
+
+            RotateQuad(Hide, {Rotation = 180}, 0.50) 
+
+            Hide.Rotation = 0 
+
+        elseif hidden == false then 
+
+            Hide.Text = "v" 
+
+            RotateBounce(Hide, {Rotation = 360}, 0.50) 
+
+            Hide.Rotation = 0 
+
+        end 
+
+    end) 
+
+  
+
+  
+
+    local OldStarLibrary = {} 
+
+     
+
+  
+
+    OldStarLibrary.Frame = Top; 
+
+     
+
+    local NextPosition = 5; 
+
+     
+
+    local function GetNextPosition() 
+
+        local BiggestSize = 0; 
+
+        local SOffset = nil; 
+
+        for i,v in pairs(Body:GetChildren()) do 
+
+            if v.Position.Y.Offset>BiggestSize then 
+
+                BiggestSize = v.Position.Y.Offset 
+
+                SOffset = v; 
+
+            end 
+
+        end 
+
+        if BiggestSize == 0 then 
+
+            BiggestSize = BiggestSize + 5; 
+
+        else 
+
+            BiggestSize = BiggestSize + SOffset.Size.Y.Offset + 5; 
+
+        end 
+
+         
+
+        return BiggestSize; 
+
+    end 
+
+  
+
+    local function GetNextSliderBodyPosition() 
+
+        local BiggestSize = 0; 
+
+        local SOffset = nil; 
+
+        for i,v in pairs(Body:GetChildren()) do 
+
+            if v.Position.Y.Offset>BiggestSize then 
+
+                BiggestSize = v.Position.Y.Offset 
+
+                SOffset = v; 
+
+            end 
+
+        end 
+
+        if BiggestSize == 0 then 
+
+            BiggestSize = BiggestSize + 20; 
+
+        else 
+
+            BiggestSize = BiggestSize + SOffset.Size.Y.Offset + 20; 
+
+        end 
+
+         
+
+        return BiggestSize; 
+
+    end 
+
+  
+
+    local function GetNextColorPickerBodyPosition() 
+
+        local BiggestSize = 0; 
+
+        local SOffset = nil; 
+
+        for i,v in pairs(Body:GetChildren()) do 
+
+            if v.Position.Y.Offset>BiggestSize then 
+
+                BiggestSize = v.Position.Y.Offset 
+
+                SOffset = v; 
+
+            end 
+
+        end 
+
+        if BiggestSize == 0 then 
+
+            BiggestSize = BiggestSize + -1; 
+
+        else 
+
+            BiggestSize = BiggestSize + SOffset.Size.Y.Offset + -1; 
+
+        end 
+
+         
+
+        return BiggestSize; 
+
+    end 
+
+     
+
+    local function GamerPosition() 
+
+        local BiggestSize = 0; 
+
+        local SOffset = nil; 
+
+        for i,v in pairs(Body:GetChildren()) do 
+
+            if v.Position.Y.Offset>BiggestSize then 
+
+                BiggestSize = v.Position.Y.Offset 
+
+                SOffset = v; 
+
+            end 
+
+        end 
+
+        if BiggestSize == 0 then 
+
+            BiggestSize = BiggestSize + 1.5; 
+
+        else 
+
+            BiggestSize = BiggestSize + SOffset.Size.Y.Offset + 1.5; 
+
+        end 
+
+         
+
+        return BiggestSize; 
+
+    end 
+
+  
+
+    function OldStarLibrary:DisableClipsDescendants() 
+
+        Body.ClipsDescendants = false 
+
+    end 
+
+  
+
+    function OldStarLibrary:CustomizeUnderlineColor(chosencolor) 
+
+        Style.BackgroundColor3 = chosencolor 
+
+    end 
+
+  
+
+    function OldStarLibrary:CreateRenderSteppedCheckBox(title) 
+
+        local Checkbox = Instance.new("TextButton") 
+
+        local CheckboxLabel = Instance.new("TextLabel") 
+
+        local checked = Instance.new("BoolValue") 
+
+     
+
+        Checkbox.Name = "Checkbox" 
+
+  
+
+        Checkbox.BackgroundColor3 = Library.Colors.Checkbox.Unchecked 
+
+        Checkbox.BorderColor3 = Library.Colors.Checkbox.Unchecked 
+
+         
+
+        Checkbox.Size = UDim2.new(0, 20, 0, 20) 
+
+        Checkbox.Font = Enum.Font.GothamBold 
+
+        Checkbox.Text = "" 
+
+        Checkbox.AutoButtonColor = false 
+
+        Checkbox.TextColor3 = Library.Colors.Text 
+
+        Checkbox.TextSize = 17 
+
+         
+
+        CheckboxLabel.Name = "CheckboxLabel" 
+
+        CheckboxLabel.Parent = Checkbox 
+
+        CheckboxLabel.BackgroundColor3 = Color3.new(1, 1, 1) 
+
+        CheckboxLabel.BackgroundTransparency = 1 
+
+        CheckboxLabel.Position = UDim2.new(-10.3500004, 5, -0.0500000007, -1) 
+
+        CheckboxLabel.Size = UDim2.new(0, 228, 0, 20) 
+
+        CheckboxLabel.Font = Enum.Font.Code 
+
+        CheckboxLabel.Text = title 
+
+        CheckboxLabel.TextColor3 = Library.Colors.Text 
+
+        CheckboxLabel.TextSize = 15 
+
+        CheckboxLabel.TextWrapped = true 
+
+        CheckboxLabel.TextXAlignment = Enum.TextXAlignment.Left 
+
+         
+
+        checked.Parent = Checkbox 
+
+        checked.Name = "Checked" 
+
+  
+
+        Checkbox.Position = UDim2.new(0, 210, 0, GetNextPosition()) 
+
+         
+
+         
+
+        Checkbox.Parent = Body 
+
+         
+
+        Body.Size = UDim2.new(1,0,0,GetNextPosition()) 
+
+         
+
+        Checkbox.MouseButton1Click:connect(function() 
+
+            if checked.Value then 
+
+                checked.Value = false 
+
+                game:GetService("TweenService"):Create(Checkbox, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(29, 29, 29)}):Play(); 
+
+                game:GetService("TweenService"):Create(Checkbox, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BorderColor3 = Color3.fromRGB(29, 29, 29)}):Play(); 
+
+            else 
+
+                checked.Value = true 
+
+                game:GetService("TweenService"):Create(Checkbox, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play(); 
+
+                game:GetService("TweenService"):Create(Checkbox, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BorderColor3 = Color3.fromRGB(255, 255, 255)}):Play(); 
+
+            end 
+
+             
+
+             
+
+        end) 
+
+         
+
+        local cb = {} 
+
+         
+
+        cb.Checked = checked; 
+
+        cb.Frame = Checkbox 
+
+         
+
+        return cb 
+
+    end 
+
+  
+
+  
+
+    function OldStarLibrary:CreateCheckBox(title, action) 
+
+        local Checkbox = Instance.new("TextButton") 
+
+        local CheckboxLabel = Instance.new("TextLabel") 
+
+     
+
+        Checkbox.Name = "Checkbox" 
+
+  
+
+        Checkbox.BackgroundColor3 = Library.Colors.Checkbox.Unchecked 
+
+        Checkbox.BorderColor3 = Library.Colors.Checkbox.Unchecked 
+
+         
+
+        Checkbox.Size = UDim2.new(0, 20, 0, 20) 
+
+        Checkbox.Font = Enum.Font.GothamBold 
+
+        Checkbox.Text = "" 
+
+        Checkbox.AutoButtonColor = false 
+
+        Checkbox.TextColor3 = Library.Colors.Text 
+
+        Checkbox.TextSize = 17 
+
+         
+
+        CheckboxLabel.Name = "CheckboxLabel" 
+
+        CheckboxLabel.Parent = Checkbox 
+
+        CheckboxLabel.BackgroundColor3 = Color3.new(1, 1, 1) 
+
+        CheckboxLabel.BackgroundTransparency = 1 
+
+        CheckboxLabel.Position = UDim2.new(-10.3500004, 5, -0.0500000007, -1) 
+
+        CheckboxLabel.Size = UDim2.new(0, 228, 0, 20) 
+
+        CheckboxLabel.Font = Enum.Font.Code 
+
+        CheckboxLabel.Text = title 
+
+        CheckboxLabel.TextColor3 = Library.Colors.Text 
+
+        CheckboxLabel.TextSize = 15 
+
+        CheckboxLabel.TextWrapped = true 
+
+        CheckboxLabel.TextXAlignment = Enum.TextXAlignment.Left 
+
+         
+
+        Checkbox.Position = UDim2.new(0, 210, 0, GetNextPosition()) 
+
+         
+
+        Checkbox.Parent = Body 
+
+         
+
+        Body.Size = UDim2.new(1,0,0,GetNextPosition()) 
+
+         
+
+        Checkbox.MouseButton1Down:connect(function() 
+
+            enabled = not enabled; 
+
+            if enabled == true then 
+
+                game:GetService("TweenService"):Create(Checkbox, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play(); 
+
+                game:GetService("TweenService"):Create(Checkbox, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BorderColor3 = Color3.fromRGB(255, 255, 255)}):Play(); 
+
+            elseif enabled == false then 
+
+                game:GetService("TweenService"):Create(Checkbox, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(29, 29, 29)}):Play(); 
+
+                game:GetService("TweenService"):Create(Checkbox, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BorderColor3 = Color3.fromRGB(29, 29, 29)}):Play(); 
+
+            end 
+
+            action(enabled); 
+
+        end) 
+
+    end 
+
+  
+
+    function OldStarLibrary:CreateButton(title, action) 
+
+        local Button = Instance.new("TextButton") 
+
+         
+
+        Button.Name = "Button" 
+
+         
+
+        Button.BackgroundColor3 = Library.Colors.Button 
+
+        Button.BorderSizePixel = 0 
+
+        Button.Position = UDim2.new(0, 5, 0, 110) 
+
+        Button.Size = UDim2.new(1, -10, 0, 25) 
+
+        Button.Font = Enum.Font.Code 
+
+        Button.Text = title 
+
+        Button.TextColor3 = Library.Colors.Text 
+
+        Button.TextSize = 15 
+
+        Button.TextXAlignment = Enum.TextXAlignment.Center 
+
+        Button.AutoButtonColor = false 
+
+        Button.ClipsDescendants = true 
+
+  
+
+        Button.Position = UDim2.new(0, 5, 0, GetNextPosition()) 
+
+         
+
+        Button.Parent = Body 
+
+         
+
+        Body.Size = UDim2.new(1,0,0,GetNextPosition()+5) 
+
+         
+
+        Button.MouseButton1Down:Connect(action) 
+
+  
+
+        Button.MouseButton1Down:Connect(function() 
+
+            RippleEffect(Button) 
+
+        end) 
+
+    end 
+
+  
+
+    function RippleEffect(button) 
+
+        spawn(function() 
+
+            local Mouse = game:GetService("Players").LocalPlayer:GetMouse() 
+
+            local RippleEffect = Instance.new("ImageLabel", button) 
+
+            local RippleEffectInner = Instance.new("ImageLabel", RippleEffect) 
+
+  
+
+            RippleEffect.Name = "RippleEffect" 
+
+            RippleEffect.BackgroundTransparency = 1 
+
+            RippleEffect.BorderSizePixel = 0 
+
+            RippleEffect.Image = "rbxassetid://2708891598" 
+
+            RippleEffect.ImageColor3 = Color3.fromRGB(255, 255, 255) 
+
+            RippleEffect.ImageTransparency = 0.7 
+
+            RippleEffect.ScaleType = Enum.ScaleType.Fit 
+
+  
+
+            RippleEffectInner.Name = "RippleEffect" 
+
+            RippleEffectInner.AnchorPoint = Vector2.new(0.5, 0.5) 
+
+            RippleEffectInner.BackgroundTransparency = 1 
+
+            RippleEffectInner.BorderSizePixel = 0 
+
+            RippleEffectInner.Position = UDim2.new(0.5, 0, 0.5, 0) 
+
+            RippleEffectInner.Size = UDim2.new(0.93, 0, 0.93, 0) 
+
+            RippleEffectInner.Image = "rbxassetid://2708891598" 
+
+            RippleEffectInner.ImageColor3 = Color3.fromRGB(45, 45, 45) 
+
+            RippleEffectInner.ImageTransparency = 0.7 
+
+            RippleEffectInner.ScaleType = Enum.ScaleType.Fit 
+
+  
+
+            RippleEffect.Position = UDim2.new((Mouse.X - RippleEffect.AbsolutePosition.X) / button.AbsoluteSize.X, 0, (Mouse.Y - RippleEffect.AbsolutePosition.Y) / button.AbsoluteSize.Y, 0) 
+
+            RippleEffect:TweenSizeAndPosition(UDim2.new(12, 0, 12, 0), UDim2.new(-5.5, 0, -5.5, 0), "Out", "Quad", 0.33) 
+
+            wait(0.01) 
+
+            game.TweenService:Create(RippleEffect, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {ImageTransparency = 1}):Play() 
+
+            game.TweenService:Create(RippleEffectInner, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {ImageTransparency = 1}):Play() 
+
+            wait(0.51) 
+
+            RippleEffect:Destroy(); 
+
+        end) 
+
+    end 
+
+     
+
+    function OldStarLibrary:CreateTextBox(title, action) 
+
+        local TextBox = Instance.new("TextBox") 
+
+  
+
+        TextBox.BackgroundColor3 = Library.Colors.Button 
+
+        TextBox.BorderColor3 = Library.Colors.Border 
+
+        TextBox.BorderSizePixel = 0 
+
+        TextBox.Size = UDim2.new(0, 228, 0, 20) 
+
+        TextBox.Font = Enum.Font.Code 
+
+        TextBox.PlaceholderColor3 = Library.Colors.PlaceholderText 
+
+        TextBox.PlaceholderText = title 
+
+        TextBox.Text = "" 
+
+        TextBox.TextColor3 = Library.Colors.Text 
+
+        TextBox.TextSize = 14 
+
+        TextBox.TextWrapped = true 
+
+        TextBox.ZIndex = 1; 
+
+         
+
+        TextBox.InputBegan:Connect(function(input) 
+
+            if input.UserInputType == Enum.UserInputType.MouseMovement then 
+
+                game:GetService("TweenService"):Create(TextBox, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play(); 
+
+            end 
+
+        end) 
+
+     
+
+        TextBox.InputEnded:Connect(function(input) 
+
+            if input.UserInputType == Enum.UserInputType.MouseMovement then 
+
+                game:GetService("TweenService"):Create(TextBox, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(29, 29, 29)}):Play(); 
+
+            end 
+
+        end) 
+
+  
+
+        TextBox.FocusLost:connect(function(enterPressed) 
+
+            if enterPressed then 
+
+                action(TextBox.Text) 
+
+            end 
+
+        end) 
+
+  
+
+        TextBox.Position = UDim2.new(0, 5, 0, GetNextPosition()) 
+
+         
+
+        TextBox.Parent = Body 
+
+         
+
+        Body.Size = UDim2.new(1,0,0,GetNextPosition()); 
+
+    end 
+
+  
+
+    function OldStarLibrary:CreateTextLabel(title) 
+
+        local Label = Instance.new("TextLabel") 
+
+  
+
+        Label.Name = "Label" 
+
+        Label.BackgroundColor3 = Color3.fromRGB(29, 29, 29) 
+
+        Label.Position = UDim2.new(0, 5, 0, 110) 
+
+        Label.Size = UDim2.new(1, -10, 0, 15) 
+
+        Label.Font = Enum.Font.Code 
+
+        Label.Text = title 
+
+        Label.TextColor3 = Library.Colors.Text 
+
+        Label.TextSize = 15 
+
+        Label.TextWrapped = true 
+
+        Label.TextXAlignment = Enum.TextXAlignment.Center 
+
+  
+
+        Label.Position = UDim2.new(0, 5, 0, GetNextPosition())     
+
+        Label.Parent = Body 
+
+     
+
+        Body.Size = UDim2.new(1,0,0,GetNextPosition()+5) 
+
+        Label.BackgroundTransparency = 0.75 
+
+        Label.BorderSizePixel = 0.75     
+
+    end 
+
+  
+
+    function OldStarLibrary:CreateSlider(title, minimumvalue, maximumvalue, startingposition, action) 
+
+        local dragging = false; 
+
+  
+
+        local SliderFrame = Instance.new("Frame", Body) 
+
+        local SlidingFrame = Instance.new("Frame", SliderFrame) 
+
+        local TitleLabel = Instance.new("TextLabel", SliderFrame) 
+
+        local SliderNumber = Instance.new("TextLabel", SliderFrame) 
+
+     
+
+        SliderFrame.Name = "SliderFrame" 
+
+        SliderFrame.BackgroundColor3 = Library.Colors.Button 
+
+        SliderFrame.BorderSizePixel = 0; 
+
+        SliderFrame.Size = UDim2.new(0.95, 0, 0, 10) 
+
+  
+
+        SlidingFrame.Name = "SlidingFrame" 
+
+        SlidingFrame.BackgroundColor3 = Color3.new(1, 1, 1) 
+
+        SlidingFrame.BorderSizePixel = 0 
+
+        SlidingFrame.Size = UDim2.new((startingposition or 0) / maximumvalue, 0, 1, 0) 
+
+     
+
+        TitleLabel.Name = "TitleLabel" 
+
+        TitleLabel.AnchorPoint = Vector2.new(0, 0.5) 
+
+        TitleLabel.BackgroundTransparency = 1 
+
+        TitleLabel.BorderSizePixel = 0 
+
+        TitleLabel.Position = UDim2.new(0, 0, -1, 0) 
+
+        TitleLabel.Size = UDim2.new(0.98, 0, 1, 0) 
+
+        TitleLabel.Font = Enum.Font.Code 
+
+        TitleLabel.TextSize = 15 
+
+        TitleLabel.Text = title; 
+
+        TitleLabel.TextColor3 = Color3.new(1, 1, 1) 
+
+        TitleLabel.TextScaled = false 
+
+        TitleLabel.TextWrapped = false 
+
+        TitleLabel.TextXAlignment = Enum.TextXAlignment.Left 
+
+  
+
+        SliderNumber.Name = "SliderNumber" 
+
+        SliderNumber.AnchorPoint = Vector2.new(0, 0.5) 
+
+        SliderNumber.BackgroundTransparency = 1 
+
+        SliderNumber.BorderSizePixel = 0 
+
+        SliderNumber.Position = UDim2.new(0.02, 0, -1, 0) 
+
+        SliderNumber.Size = UDim2.new(0.98, 0, 1, 0) 
+
+        SliderNumber.Font = Enum.Font.Code 
+
+        SliderNumber.TextSize = 15 
+
+        SliderNumber.Text = tostring(startingposition and math.floor((startingposition / maximumvalue) * (maximumvalue - minimumvalue) + minimumvalue) or 0) 
+
+        SliderNumber.TextColor3 = Color3.new(1, 1, 1) 
+
+        SliderNumber.TextScaled = false 
+
+        SliderNumber.TextWrapped = false 
+
+        SliderNumber.TextXAlignment = Enum.TextXAlignment.Right 
+
+     
+
+        local function Sliding(input) 
+
+            local pos = UDim2.new(math.clamp((input.Position.X - SliderFrame.AbsolutePosition.X) / SliderFrame.AbsoluteSize.X, 0, 1), 0, 1, 0) 
+
+            SlidingFrame:TweenSize(pos, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.15, true) 
+
+            local value = math.floor(((pos.X.Scale * maximumvalue) / maximumvalue) * (maximumvalue - minimumvalue) + minimumvalue) 
+
+            SliderNumber.Text = tostring(value) 
+
+            action(value) 
+
+        end; 
+
+     
+
+        SliderFrame.InputBegan:Connect(function(input) 
+
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then 
+
+                dragging = true 
+
+            end 
+
+        end) 
+
+         
+
+        SliderFrame.InputEnded:Connect(function(input) 
+
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then 
+
+                dragging = false 
+
+            end 
+
+        end) 
+
+         
+
+        SliderFrame.InputBegan:Connect(function(input) 
+
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then 
+
+                Sliding(input) 
+
+            end 
+
+        end) 
+
+     
+
+        game:GetService("UserInputService").InputChanged:Connect(function(input) 
+
+            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then 
+
+                Sliding(input) 
+
+            end 
+
+        end) 
+
+  
+
+        SliderFrame.Position = UDim2.new(0, 5, 0, GetNextSliderBodyPosition()) 
+
+  
+
+        SliderFrame.Parent = Body 
+
+         
+
+        Body.Size = UDim2.new(1,0,0,GetNextSliderBodyPosition()) 
+
+  
+
+        SliderFrame.Size = UDim2.new(0.95, 0, 0, 10) 
+
+  
+
+    end 
+
+  
+
+    function OldStarLibrary:CreateColorPicker(title, presetcolor, action) 
+
+         
+
+        local HSD = false 
+
+        local VD = false 
+
+        local Holder = Instance.new("TextButton", Body) 
+
+        local ColorTitle = Instance.new("TextLabel", Holder) 
+
+        local PreviewStatus = Instance.new("TextButton", Holder) 
+
+        local ColorPickerFrame = Instance.new("Frame", Holder) 
+
+        local HuePallete = Instance.new("ImageLabel", ColorPickerFrame) 
+
+        local HuePalleteMarker = Instance.new("ImageLabel", HuePallete) 
+
+        local HueBrightness = Instance.new("ImageLabel", ColorPickerFrame) 
+
+        local HueBrightnessMarker = Instance.new("Frame", HueBrightness) 
+
+  
+
+        Holder.Name = "Holder" 
+
+        Holder.BackgroundColor3 = Color3.fromRGB(50, 50, 50) 
+
+        Holder.BackgroundTransparency = 1 
+
+        Holder.BorderSizePixel = 0 
+
+        Holder.Size = UDim2.new(1, 0, 0, 50) 
+
+        Holder.Font = Enum.Font.Code 
+
+        Holder.Text = "" 
+
+        Holder.Active = true 
+
+        Holder.ZIndex = 2 
+
+         
+
+        ColorTitle.Name = "ColorTitle" 
+
+        ColorTitle.AnchorPoint = Vector2.new(0, 0.5) 
+
+        ColorTitle.BackgroundTransparency = 1 
+
+        ColorTitle.BorderSizePixel = 0 
+
+        ColorTitle.Position = UDim2.new(0.02, 0, 0.25, 0) 
+
+        ColorTitle.Size = UDim2.new(0.58, 0, 0.5, 0) 
+
+        ColorTitle.Font = Enum.Font.Code 
+
+        ColorTitle.Text = title 
+
+        ColorTitle.TextSize = 16 
+
+        ColorTitle.TextColor3 = Color3.fromRGB(255, 255, 255) 
+
+        ColorTitle.TextScaled = false 
+
+        ColorTitle.TextWrapped = false 
+
+        ColorTitle.TextXAlignment = Enum.TextXAlignment.Left 
+
+        ColorTitle.ZIndex = 1 
+
+  
+
+        PreviewStatus.Name = "PreviewStatus" 
+
+        PreviewStatus.AnchorPoint = Vector2.new(1, 0); 
+
+        PreviewStatus.BackgroundColor3 = presetcolor or Color3.fromRGB(255, 255, 255); 
+
+        PreviewStatus.BorderSizePixel = 0 
+
+        PreviewStatus.Font = Enum.Font.SourceSansLight; 
+
+        PreviewStatus.Text = "" 
+
+        PreviewStatus.AutoButtonColor = false 
+
+        PreviewStatus.Position = UDim2.new(1, -5, 0, 0) 
+
+        PreviewStatus.Size = UDim2.new(0.112, 0, 0.45, 0) 
+
+        PreviewStatus.ZIndex = 1 
+
+  
+
+        ColorPickerFrame.Name = "ColorPickerFrame" 
+
+        ColorPickerFrame.BackgroundColor3 = Library.Colors.Body 
+
+        ColorPickerFrame.BorderSizePixel = 0 
+
+        ColorPickerFrame.Position = UDim2.new(0.99, 1, -0.15, 0) 
+
+        ColorPickerFrame.Size = UDim2.new(1, 0, 0, 0) 
+
+        ColorPickerFrame.Visible = false 
+
+        ColorPickerFrame.ZIndex = 2 
+
+         
+
+        HuePallete.Name = "HuePallete" 
+
+        HuePallete.BackgroundTransparency = 1 
+
+        HuePallete.BorderSizePixel = 0 
+
+        HuePallete.ClipsDescendants = true 
+
+        HuePallete.Position = UDim2.new(0.03, 0, 0.057, 0) 
+
+        HuePallete.Size = UDim2.new(0.764, 0, 0.886, 0) 
+
+        HuePallete.Image = "rbxassetid://4477380641" 
+
+        HuePallete.ZIndex = 2 
+
+         
+
+        HuePalleteMarker.Name = "HuePalleteMarker" 
+
+        HuePalleteMarker.AnchorPoint = Vector2.new(0.5, 0.5) 
+
+        HuePalleteMarker.BackgroundTransparency = 1 
+
+        HuePalleteMarker.BorderSizePixel = 0 
+
+        HuePalleteMarker.Position = UDim2.new(presetcolor and select(1, Color3.toHSV(presetcolor)) or 0, 0, presetcolor and 1 - select(2, Color3.toHSV(presetcolor)) or 0, 0) 
+
+        HuePalleteMarker.Size = UDim2.new(0.146, 0, 0.2, 0) 
+
+        HuePalleteMarker.Image = "rbxassetid://4409133510" 
+
+        HuePalleteMarker.ImageTransparency = 1 
+
+        HuePalleteMarker.ImageColor3 = Color3.fromRGB(0, 0, 0) 
+
+        HuePalleteMarker.ScaleType = Enum.ScaleType.Crop 
+
+        HuePalleteMarker.ZIndex = 2 
+
+         
+
+        HueBrightness.Name = "HueBrightness" 
+
+        HueBrightness.AnchorPoint = Vector2.new(1, 0) 
+
+        HueBrightness.BackgroundTransparency = 1 
+
+        HueBrightness.BorderSizePixel = 0 
+
+        HueBrightness.Position = UDim2.new(0.981, 0, 0.057, 0) 
+
+        HueBrightness.Size = UDim2.new(0.157, 0, 0.886, 0) 
+
+        HueBrightness.Image = "rbxassetid://4477380092" 
+
+        HueBrightness.ImageColor3 = Color3.fromRGB(255, 255, 255) 
+
+        HueBrightness.ScaleType = Enum.ScaleType.Crop 
+
+        HueBrightness.ZIndex = 2 
+
+         
+
+        HueBrightnessMarker.Name = "HueBrightnessMarker" 
+
+        HueBrightnessMarker.AnchorPoint = Vector2.new(0, 0.5) 
+
+        HueBrightnessMarker.BackgroundColor3 = Color3.fromRGB(15, 15, 15) 
+
+        HueBrightnessMarker.BorderColor3 = Color3.fromRGB(0, 0, 0) 
+
+        HueBrightnessMarker.BorderSizePixel = 0 
+
+        HueBrightnessMarker.Position = UDim2.new(0, 0, presetcolor and 1 - select(3, Color3.toHSV(presetcolor)) or 0, 0) 
+
+        HueBrightnessMarker.Size = UDim2.new(1, 0, 0.028, 0) 
+
+        HueBrightnessMarker.ZIndex = 2 
+
+     
+
+        PreviewStatus.MouseButton1Click:Connect(function() 
+
+            if not ColorPickerFrame.Visible then 
+
+                ColorPickerFrame.Visible = true 
+
+                ColorPickerFrame:TweenSize(UDim2.new(1, 0, 2.75, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true) 
+
+            elseif ColorPickerFrame.Visible then 
+
+                HSD = false 
+
+                VD = false 
+
+                ColorPickerFrame:TweenSize(UDim2.new(1, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.25, true) 
+
+                wait(0.25) 
+
+                ColorPickerFrame.Visible = false 
+
+            end 
+
+        end) 
+
+  
+
+        HuePallete.InputBegan:Connect(function(input) 
+
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then 
+
+                HSD = true 
+
+            end 
+
+        end) 
+
+         
+
+        HuePallete.InputEnded:Connect(function(input) 
+
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then 
+
+                HSD = false 
+
+            end 
+
+        end) 
+
+     
+
+        HueBrightness.InputBegan:Connect(function(input) 
+
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then 
+
+                VD = true 
+
+            end 
+
+        end) 
+
+         
+
+        HueBrightness.InputEnded:Connect(function(input) 
+
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then 
+
+                VD = false 
+
+            end 
+
+        end) 
+
+  
+
+        game:GetService("UserInputService").InputChanged:Connect(function(input) 
+
+            if HSD and input.UserInputType == Enum.UserInputType.MouseMovement then 
+
+                HuePalleteMarker.Position = UDim2.new(math.clamp((input.Position.X - HuePallete.AbsolutePosition.X) / HuePallete.AbsoluteSize.X, 0, 1), 0, math.clamp((input.Position.Y - HuePallete.AbsolutePosition.Y) / HuePallete.AbsoluteSize.Y, 0, 1), 0) 
+
+                 
+
+                PreviewStatus.BackgroundColor3 = Color3.fromHSV(HuePalleteMarker.Position.X.Scale, 1 - HuePalleteMarker.Position.Y.Scale, 1 - HueBrightnessMarker.Position.Y.Scale) 
+
+                 
+
+                action(PreviewStatus.BackgroundColor3); 
+
+            elseif VD and input.UserInputType == Enum.UserInputType.MouseMovement then 
+
+                HueBrightnessMarker.Position = UDim2.new(0, 0, math.clamp((input.Position.Y - HueBrightness.AbsolutePosition.Y) / HueBrightness.AbsoluteSize.Y, 0, 1), 0) 
+
+  
+
+                PreviewStatus.BackgroundColor3 = Color3.fromHSV(HuePalleteMarker.Position.X.Scale, 1 - HuePalleteMarker.Position.Y.Scale, 1 - HueBrightnessMarker.Position.Y.Scale); 
+
+                 
+
+                action(PreviewStatus.BackgroundColor3); 
+
+            end; 
+
+        end); 
+
+  
+
+        Holder.Position = UDim2.new(0, 1, 0, GetNextPosition()) 
+
+         
+
+        Holder.Parent = Body 
+
+         
+
+        Body.Size = UDim2.new(1, 0, 0, GetNextPosition()-25); 
+
+    end 
+
+  
+
+    function OldStarLibrary:CreateDropdownList(options, action) 
+
+        local Dropdown = Instance.new("TextLabel") 
+
+        local DropdownButton = Instance.new("TextButton") 
+
+         
+
+        Dropdown.Name = "Dropdown" 
+
+         
+
+        Dropdown.BackgroundColor3 = Library.Colors.Dropdown 
+
+        Dropdown.BorderSizePixel = 0 
+
+        Dropdown.Size = UDim2.new(0, 228, 0, 20) 
+
+        Dropdown.Font = Enum.Font.Code 
+
+        Dropdown.Text = options[1] 
+
+        Dropdown.TextColor3 = Library.Colors.Text 
+
+        Dropdown.TextSize = 15 
+
+        Dropdown.TextWrapped = true 
+
+        Dropdown.TextXAlignment = Enum.TextXAlignment.Center 
+
+        Dropdown.ZIndex = 4 
+
+         
+
+        DropdownButton.Parent = Dropdown 
+
+        DropdownButton.BackgroundColor3 = Library.Colors.Button 
+
+        DropdownButton.BackgroundTransparency = 1 
+
+        DropdownButton.Position = UDim2.new(1, -25, 0, 0) 
+
+        DropdownButton.Size = UDim2.new(0, 25, 1, 0) 
+
+        DropdownButton.Font = Enum.Font.Code 
+
+        DropdownButton.Text = "v" 
+
+        DropdownButton.TextColor3 = Library.Colors.Text 
+
+        DropdownButton.TextSize = 15 
+
+        DropdownButton.TextXAlignment = Enum.TextXAlignment.Center 
+
+        DropdownButton.ZIndex = 4 
+
+  
+
+        local Selections = Instance.new("Folder") 
+
+        Selections.Parent = Dropdown 
+
+        Selections.Name = "Selections" 
+
+  
+
+        Dropdown.Position = UDim2.new(0, 5, 0, GetNextPosition()) 
+
+         
+
+        Body.Size = UDim2.new(1,1,0,GetNextPosition()+5) 
+
+         
+
+        Dropdown.Parent = Body 
+
+         
+
+        Body.Size = UDim2.new(1,1,0,GetNextPosition()) 
+
+         
+
+        for i,v in pairs(options) do 
+
+            local Button = Instance.new("TextButton") 
+
+             
+
+            Button.Name = "Button" 
+
+            Button.Parent = Selections 
+
+            Button.AutoButtonColor = false 
+
+            Button.BackgroundColor3 = Library.Colors.Dropdown 
+
+            Button.BorderColor3 = Library.Colors.Border 
+
+            Button.BorderSizePixel = 0 
+
+            Button.Position = UDim2.new(0, 0, #Selections:GetChildren(), 0) 
+
+            Button.Size = UDim2.new(0, 228, 0, 20) 
+
+            Button.Font = Enum.Font.Code 
+
+            Button.Text = v; 
+
+            Button.TextColor3 = Library.Colors.Text 
+
+            Button.TextSize = 15 
+
+            Button.TextXAlignment = Enum.TextXAlignment.Center 
+
+            Button.Visible = false; 
+
+            Button.ZIndex = 5; 
+
+  
+
+            Button.InputBegan:Connect(function(input) 
+
+                game:GetService("TweenService"):Create(Button, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play(); 
+
+            end) 
+
+         
+
+            Button.InputEnded:Connect(function(input) 
+
+                game:GetService("TweenService"):Create(Button, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(29, 29, 29)}):Play(); 
+
+            end) 
+
+  
+
+            Button.MouseButton1Click:Connect(function() 
+
+                action(v)         
+
+                Dropdown.Text = v; 
+
+                for i,v in pairs(Selections:GetChildren()) do 
+
+                    v.Visible = false 
+
+                end 
+
+                DropdownButton.Text = "v" 
+
+                RotateQuad(DropdownButton, {Rotation = 360}, 0.50) 
+
+                DropdownButton.Rotation = 0 
+
+            end)         
+
+        end 
+
+         
+
+        DropdownButton.MouseButton1Click:Connect(function() 
+
+            for i,v in pairs(Selections:GetChildren()) do 
+
+                if v.Visible == true then 
+
+                    v.Visible = false 
+
+                    DropdownButton.Text = "v" 
+
+                    RotateQuad(DropdownButton, {Rotation = 360}, 0.50) 
+
+                    DropdownButton.Rotation = 0 
+
+                elseif v.Visible == false then 
+
+                    v.Visible = true 
+
+                    DropdownButton.Text = "-" 
+
+                    RotateQuad(DropdownButton, {Rotation = 180}, 0.50) 
+
+                    DropdownButton.Rotation = 0 
+
+                end 
+
+            end 
+
+        end) 
+
+    end 
+
+     
+
+    return OldStarLibrary; 
+
+end 
+
+  
+
+return Library;
